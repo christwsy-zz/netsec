@@ -18,7 +18,7 @@ public class MessageParser {
     StringTokenizer t;
     String IDENT = "Skipper";
     String PASSWORD = "franco";
-    static String COOKIE ="bkuhn";
+    static String COOKIE ="193U7UPJPUPRQLUE2RY";
     String PPCHECKSUM="";
     int HOST_PORT;
     public static int IsVerified;
@@ -109,6 +109,14 @@ public class MessageParser {
                 this.Execute("IDENT");
                 Thread.sleep(1000);
                 msg = GetMonitorMessage();
+                System.out.println(msg);
+            }
+
+            if (msg.indexOf("REQUIRE: ALIVE") != -1) {
+                this.Execute("ALIVE");
+                Thread.sleep(1000);
+                msg = GetMonitorMessage();
+                success = true;
             }
 
             if (msg.indexOf("REQUIRE: PASSWORD") != -1) {
@@ -116,16 +124,15 @@ public class MessageParser {
                 Thread.sleep(1000);
                 msg = GetMonitorMessage();
                 COOKIE = msg.split(" ")[2];
-                WritePersonalData("PASSWORD","COOKIE");
+                WritePersonalData("PASSWORD", "COOKIE");
             }
 
             if (msg.indexOf("REQUIRE: HOST_PORT") != -1) {
                 this.Execute("HOST_PORT");
                 Thread.sleep(1000);
                 msg = GetMonitorMessage();
-                System.out.println("After host port: " + msg);
+                success = true;
             }
-            success = true;
 
         } catch (NullPointerException n) {
             System.out.println("MessageParser [Login]: null pointer error "+
