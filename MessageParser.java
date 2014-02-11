@@ -11,8 +11,8 @@ public class MessageParser {
     int COMMAND_LIMIT = 25;
     public  int CType;
     public static String HOSTNAME;
-    PrintWriter out = null; 
-    BufferedReader in = null; 
+    PrintWriter out = null;
+    BufferedReader in = null;
     String mesg,sentmessage;
     String filename;
     StringTokenizer t;
@@ -25,8 +25,8 @@ public class MessageParser {
 
     //File I/O Declarations
     BufferedReader fIn = null;
-    PrintWriter fOut = null; 
-    static String InputFileName = "Input.dat";  
+    PrintWriter fOut = null;
+    static String InputFileName = "Input.dat";
     static String ResourceFileName = "Resources.dat";
     String[] cmdArr = new String[COMMAND_LIMIT];
 
@@ -99,7 +99,7 @@ public class MessageParser {
             return temp;  //returns what the monitor wants
       } catch (NoSuchElementException e) {  return null;  }
    }
-  
+
     public boolean Login() throws InterruptedException {
         boolean success = false;
         try {
@@ -116,18 +116,20 @@ public class MessageParser {
                 Thread.sleep(1000);
                 msg = GetMonitorMessage();
                 COOKIE = msg.split(" ")[2];
+                WritePersonalData("PASSWORD","COOKIE");
             }
 
             if (msg.indexOf("REQUIRE: HOST_PORT") != -1) {
                 this.Execute("HOST_PORT");
                 Thread.sleep(1000);
                 msg = GetMonitorMessage();
+                System.out.println("After host port: " + msg);
             }
+            success = true;
 
         } catch (NullPointerException n) {
             System.out.println("MessageParser [Login]: null pointer error "+
                 "at login:\n\t"+n);
-            success = true;
         }
 
         System.out.println("Success Value Login = "+success);
@@ -156,7 +158,7 @@ public class MessageParser {
 
    //Handle Directives and Execute appropriate commands
    public boolean Execute (String sentmessage) {
-      boolean success = false; 
+      boolean success = false;
       try {
          if (sentmessage.trim().equals("IDENT")) {
             sentmessage = sentmessage.concat(" ");
@@ -168,14 +170,14 @@ public class MessageParser {
             sentmessage = sentmessage.concat(" ");
             sentmessage = sentmessage.concat(PASSWORD);
             SendIt (sentmessage.trim());
-            success = true;  
+            success = true;
          } else if (sentmessage.trim().equals("HOST_PORT")) {
             sentmessage = sentmessage.concat(" ");
             sentmessage = sentmessage.concat(HOSTNAME);//hostname
             sentmessage = sentmessage.concat(" ");
             sentmessage = sentmessage.concat(String.valueOf(HOST_PORT));
             SendIt (sentmessage);
-            success = true;                                  
+            success = true;
          } else if (sentmessage.trim().equals("ALIVE")) {
 	    sentmessage = sentmessage.concat(" ");
             sentmessage = sentmessage.concat(COOKIE);
@@ -196,7 +198,7 @@ public class MessageParser {
          } else if (sentmessage.trim().equals("RANDOM_PARTICIPANT_HOST_PORT")){
             SendIt(sentmessage);
             success = true;
-         }         
+         }
       } catch (IOException e) {
 	 System.out.println("IOError:\n\t"+e);
 	 success = false;
@@ -208,50 +210,50 @@ public class MessageParser {
    }
 
    public void SendIt (String message) throws IOException {
-      try {        
+      try {
 	 System.out.println("MessageParser [SendIt]: sent:\n\t"+message);
          out.println(message);
          if (out.checkError() == true) throw (new IOException());
          out.flush();
          if(out.checkError() == true) throw (new IOException());
       } catch (IOException e) {} //Bubble the Exception upwards
-   } 
+   }
 
-   //In future send parameters here so that diff commands are executed   
+   //In future send parameters here so that diff commands are executed
    public boolean ProcessExtraMessages() {
       boolean success = false;
       System.out.println("MessageParser [ExtraCommand]: received:\n\t"+
 			 mesg.trim());
-    
+
       if ((mesg.trim().equals("")) || (mesg.trim().equals(null))) {
 	 mesg = GetMonitorMessage();
 	 System.out.println("MessageParser [ExtraCommand]: received (2):\n\t"+
 			    mesg.trim());
-      } 
-    
+      }
+
       String id = GetNextCommand (mesg, "");
- 
-      if (id == null) { // No Require, can Launch Free Form Commands Now  
+
+      if (id == null) { // No Require, can Launch Free Form Commands Now
 	 if (Execute("PARTICIPANT_STATUS")) { //Check for Player Status
 	    mesg = GetMonitorMessage();
 	    success = true;
 	    try {
 	       SaveResources(mesg);  //Save the data to a file
-	       SendIt("SYNTHESIZE WEAPONS");        
+	       SendIt("SYNTHESIZE WEAPONS");
 	       mesg = GetMonitorMessage();
-	       SendIt("SYNTHESIZE COMPUTERS");        
+	       SendIt("SYNTHESIZE COMPUTERS");
 	       mesg = GetMonitorMessage();
-	       SendIt("SYNTHESIZE VEHICLES");        
-	       mesg = GetMonitorMessage();        
+	       SendIt("SYNTHESIZE VEHICLES");
+	       mesg = GetMonitorMessage();
 	       if (Execute("PARTICIPANT_STATUS")) { //Check for Player Status
 		  mesg = GetMonitorMessage();
 		  success = true;
 		  SaveResources(mesg);//Save the data to a file
 	       }
 	    } catch (IOException e) {}
-	 } 
-      } else { 
-	 mesg = GetMonitorMessage();      
+	 }
+      } else {
+	 mesg = GetMonitorMessage();
 	 System.out.println("MessageParser [ExtraCommand]: failed "+
 			    "extra message parse");
       }
@@ -260,13 +262,13 @@ public class MessageParser {
 
    public void MakeFreeFlowCommands() throws IOException {
    }
-	
+
    public void SaveResources(String res) throws IOException {
       System.out.println("MessageParser [SaveResources]:");
       try {  // If an error occurs then don't update the Resources File
          String temp = GetNextCommand (res, "COMMAND_ERROR");
          if ((temp == null) || (temp.equals(""))) {
-            fOut = new PrintWriter(new FileWriter(ResourceFileName));        
+            fOut = new PrintWriter(new FileWriter(ResourceFileName));
             t = new StringTokenizer(res," :\n");
             try {
                temp = t.nextToken();
@@ -283,7 +285,7 @@ public class MessageParser {
 	       temp = "";
 	       fOut.close();
 	    }
-         } 
+         }
          fOut.close();
       } catch (IOException e) { fOut.close(); }
    }
@@ -320,25 +322,25 @@ public class MessageParser {
    }
 
    public void GetIdentification() {
-   }                                      
-      
+   }
+
 
    // Write Personal data such as Password and Cookie
    public boolean  WritePersonalData(String Passwd,String Cookie) {
       boolean success = false;
       PrintWriter pout = null;
-      try { 
+      try {
          if ((Passwd != null) && !(Passwd.equals(""))) {
             pout = new PrintWriter(new FileWriter(filename));
             pout.println("PASSWORD");
             pout.println(Passwd); //(PASSWORD);
-         }   
+         }
          if ((Cookie != null) && !(Cookie.equals(""))) {
             pout.println("COOKIE");
 	    pout.flush();
             pout.println(Cookie);
 	    pout.flush();
-         }  
+         }
          pout.close();
          success = true;
       } catch (IOException e) {
@@ -346,7 +348,7 @@ public class MessageParser {
 	 return success;
       } catch (NumberFormatException n) {
       }
-      return success;    
+      return success;
    }
 
    //Check whether the Monitor is Authentic
