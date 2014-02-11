@@ -56,12 +56,12 @@ public class MessageParser {
             sMesg = temp;
             decrypt = temp;
 
-        //After IDENT has been sent-to handle partially encrypted msg group
-        while(!(decrypt.trim().equals("WAITING:"))) {
-            temp = in.readLine();
-            sMesg = sMesg.concat(" ");
-            decrypt = temp;
-            sMesg = sMesg.concat(decrypt);
+            //After IDENT has been sent-to handle partially encrypted msg group
+            while(!(decrypt.trim().equals("WAITING:"))) {
+                temp = in.readLine();
+                sMesg = sMesg.concat(" ");
+                decrypt = temp;
+                sMesg = sMesg.concat(decrypt);
             } //sMesg now contains the Message Group sent by the Monitor
         } catch (IOException e) {
             System.out.println("MessageParser [getMonitorMessage]: error "+
@@ -100,19 +100,39 @@ public class MessageParser {
       } catch (NoSuchElementException e) {  return null;  }
    }
   
-   public boolean Login() { 
-      boolean success = false;
-      try {  
+    public boolean Login() throws InterruptedException {
+        boolean success = false;
+        try {
+            String msg = GetMonitorMessage();
 
-      } catch (NullPointerException n) {
-        System.out.println("MessageParser [Login]: null pointer error "+
-            "at login:\n\t"+n);
-         success = true;
-      }
+            if (msg.indexOf("REQUIRE: IDENT") != -1) {
+                this.Execute("IDENT");
+                Thread.sleep(1000);
+                msg = GetMonitorMessage();
+            }
 
-      System.out.println("Success Value Login = "+success);
-      return success;
-   }
+            if (msg.indexOf("REQUIRE: PASSWORD") != -1) {
+                this.Execute("PASSWORD");
+                Thread.sleep(1000);
+                msg = GetMonitorMessage();
+                COOKIE = msg.split(" ")[2];
+            }
+
+            if (msg.indexOf("REQUIRE: HOST_PORT") != -1) {
+                this.Execute("HOST_PORT");
+                Thread.sleep(1000);
+                msg = GetMonitorMessage();
+            }
+
+        } catch (NullPointerException n) {
+            System.out.println("MessageParser [Login]: null pointer error "+
+                "at login:\n\t"+n);
+            success = true;
+        }
+
+        System.out.println("Success Value Login = "+success);
+        return success;
+    }
 
    //Handle Directives and Execute appropriate commands with one argument
    public boolean Execute (String sentmessage, String arg) {
