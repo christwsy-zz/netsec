@@ -104,33 +104,16 @@ public class MessageParser {
         boolean success = false;
         try {
             String msg = GetMonitorMessage();
+            String next = GetNextCommand(msg, "");
 
-            if (msg.indexOf("REQUIRE: IDENT") != -1) {
-                this.Execute("IDENT");
-                Thread.sleep(1000);
-                msg = GetMonitorMessage();
-                System.out.println(msg);
-            }
-
-            if (msg.indexOf("REQUIRE: ALIVE") != -1) {
-                this.Execute("ALIVE");
-                Thread.sleep(1000);
-                msg = GetMonitorMessage();
-                success = true;
-            }
-
-            if (msg.indexOf("REQUIRE: PASSWORD") != -1) {
-                this.Execute("PASSWORD");
-                Thread.sleep(1000);
-                msg = GetMonitorMessage();
-                COOKIE = msg.split(" ")[2];
-                WritePersonalData("PASSWORD", "COOKIE");
-            }
-
-            if (msg.indexOf("REQUIRE: HOST_PORT") != -1) {
-                this.Execute("HOST_PORT");
-                Thread.sleep(1000);
-                msg = GetMonitorMessage();
+            if (next != null) {
+                do {
+                    System.out.println("Next: " + next);
+                    Execute(next);
+                    msg = GetMonitorMessage();
+                    next = GetNextCommand(msg, "");
+                } while (next != null || !next.equals("QUIT"));
+                System.out.println("donezo\n\n\n\n\n\n");
                 success = true;
             }
 
