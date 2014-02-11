@@ -18,8 +18,6 @@ class Homework {
     }
 
     public static void main(String[] args) {
-        MONITOR_NAME = new String(args[0]);
-        MONITOR_PORT = Integer.parseInt(args[1]);
         Homework hw = new Homework("johne", "eversole");
         hw.ac.start(); //Start the Active Client
         hw.s.start();  //Start the Server
