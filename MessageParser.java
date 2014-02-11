@@ -7,96 +7,96 @@ import java.math.*;
 
 
 public class MessageParser {
-   //Monitor Handling Declarations
-   int COMMAND_LIMIT = 25;
-   public  int CType;
-   public static String HOSTNAME;
-   PrintWriter out = null; 
-   BufferedReader in = null; 
-   String mesg,sentmessage;
-	String filename;
-   StringTokenizer t;
-   String IDENT = "Skipper";
-   String PASSWORD = "franco";
-   static String COOKIE ="bkuhn";
-   String PPCHECKSUM="";
-   int HOST_PORT;
-   public static int IsVerified;
-  
-   //File I/O Declarations
-   BufferedReader fIn = null;
-   PrintWriter fOut = null; 
-   static String InputFileName = "Input.dat";  
-   static String ResourceFileName = "Resources.dat";
-   String[] cmdArr = new String[COMMAND_LIMIT];
+    //Monitor Handling Declarations
+    int COMMAND_LIMIT = 25;
+    public  int CType;
+    public static String HOSTNAME;
+    PrintWriter out = null; 
+    BufferedReader in = null; 
+    String mesg,sentmessage;
+    String filename;
+    StringTokenizer t;
+    String IDENT = "Skipper";
+    String PASSWORD = "franco";
+    static String COOKIE ="bkuhn";
+    String PPCHECKSUM="";
+    int HOST_PORT;
+    public static int IsVerified;
 
-   static String MyKey;
-   String MonitorKey;
-   String first;
-   ObjectInputStream oin = null;
-   ObjectOutputStream oout = null;
+    //File I/O Declarations
+    BufferedReader fIn = null;
+    PrintWriter fOut = null; 
+    static String InputFileName = "Input.dat";  
+    static String ResourceFileName = "Resources.dat";
+    String[] cmdArr = new String[COMMAND_LIMIT];
 
-   public MessageParser() {
-      filename = "passwd.dat";
-      GetIdentification(); // Gets Password and Cookie from 'passwd.dat' file
-   }
+    static String MyKey;
+    String MonitorKey;
+    String first;
+    ObjectInputStream oin = null;
+    ObjectOutputStream oout = null;
 
-   public MessageParser(String ident, String password) {
-      filename = ident+".dat";
-      PASSWORD = password;
-      IDENT = ident;
-      GetIdentification(); // Gets Password and Cookie from 'passwd.dat' file
-   }
+    public MessageParser() {
+        filename = "passwd.dat";
+        GetIdentification(); // Gets Password and Cookie from 'passwd.dat' file
+    }
 
-   public String GetMonitorMessage() {
-      String sMesg="", decrypt="";
-      try {
-         String temp = in.readLine();
-         first = temp; // 1st
-	 sMesg = temp;
-	 decrypt = temp;
-          
-         //After IDENT has been sent-to handle partially encrypted msg group
-         while(!(decrypt.trim().equals("WAITING:"))) {
+    public MessageParser(String ident, String password) {
+        filename = ident+".dat";
+        PASSWORD = password;
+        IDENT = ident;
+        GetIdentification(); // Gets Password and Cookie from 'passwd.dat' file
+    }
+
+    public String GetMonitorMessage() {
+        String sMesg="", decrypt="";
+        try {
+            String temp = in.readLine();
+            first = temp; // 1st
+            sMesg = temp;
+            decrypt = temp;
+
+        //After IDENT has been sent-to handle partially encrypted msg group
+        while(!(decrypt.trim().equals("WAITING:"))) {
             temp = in.readLine();
             sMesg = sMesg.concat(" ");
-	    decrypt = temp;
-	    sMesg = sMesg.concat(decrypt);
-         } //sMesg now contains the Message Group sent by the Monitor
-      } catch (IOException e) {
-         System.out.println("MessageParser [getMonitorMessage]: error "+
-			    "in GetMonitorMessage:\n\t"+e+this);
-	 sMesg="";
-      } catch (NullPointerException n) {
-	 sMesg = "";
-      } catch (NumberFormatException o) {
-         System.out.println("MessageParser [getMonitorMessage]: number "+
-			    "format error:\n\t"+o+this);
-	 sMesg="";
-      } catch (NoSuchElementException ne) {
-	 System.out.println("MessageParser [getMonitorMessage]: no such "+
-			    "element exception occurred:\n\t"+this);
-      } catch (ArrayIndexOutOfBoundsException ae) {
-	 System.out.println("MessageParser [getMonitorMessage]: AIOB "+
-			    "EXCEPTION!\n\t"+this);
-	 sMesg="";
-      }
-      return sMesg;
-   }
+            decrypt = temp;
+            sMesg = sMesg.concat(decrypt);
+            } //sMesg now contains the Message Group sent by the Monitor
+        } catch (IOException e) {
+            System.out.println("MessageParser [getMonitorMessage]: error "+
+            "in GetMonitorMessage:\n\t"+e+this);
+            sMesg="";
+        } catch (NullPointerException n) {
+            sMesg = "";
+        } catch (NumberFormatException o) {
+            System.out.println("MessageParser [getMonitorMessage]: number "+
+                "format error:\n\t"+o+this);
+            sMesg="";
+        } catch (NoSuchElementException ne) {
+            System.out.println("MessageParser [getMonitorMessage]: no such "+
+            "element exception occurred:\n\t"+this);
+        } catch (ArrayIndexOutOfBoundsException ae) {
+            System.out.println("MessageParser [getMonitorMessage]: AIOB "+
+            "EXCEPTION!\n\t"+this);
+            sMesg="";
+        }
+        return sMesg;
+    }
 
-   //Handling Cookie and PPChecksum
-   public String GetNextCommand (String mesg, String sCommand) {
-      try {
-         String sDefault = "REQUIRE";
-         if (!(sCommand.equals(""))) sDefault = sCommand;
-         t = new StringTokenizer(mesg," :\n");
-         //Search for the REQUIRE Command
-         String temp = t.nextToken();
-         while (!(temp.trim().equals(sDefault.trim()))) temp = t.nextToken();
-	 temp = t.nextToken();
-         System.out.println("MessageParser [getNextCommand]: returning:\n\t"+
-			    temp);
-         return temp;  //returns what the monitor wants
+    //Handling Cookie and PPChecksum
+    public String GetNextCommand (String mesg, String sCommand) {
+        try {
+            String sDefault = "REQUIRE";
+            if (!(sCommand.equals(""))) sDefault = sCommand;
+            t = new StringTokenizer(mesg," :\n");
+            //Search for the REQUIRE Command
+            String temp = t.nextToken();
+            while (!(temp.trim().equals(sDefault.trim()))) temp = t.nextToken();
+            temp = t.nextToken();
+            System.out.println("MessageParser [getNextCommand]: returning:\n\t"+
+            temp);
+            return temp;  //returns what the monitor wants
       } catch (NoSuchElementException e) {  return null;  }
    }
   
@@ -105,9 +105,9 @@ public class MessageParser {
       try {  
 
       } catch (NullPointerException n) {
-         System.out.println("MessageParser [Login]: null pointer error "+
-			    "at login:\n\t"+n);
-         success = false;
+        System.out.println("MessageParser [Login]: null pointer error "+
+            "at login:\n\t"+n);
+         success = true;
       }
 
       System.out.println("Success Value Login = "+success);
