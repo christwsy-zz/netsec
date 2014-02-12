@@ -100,7 +100,7 @@ public class MessageParser {
       } catch (NoSuchElementException e) {  return null;  }
    }
 
-    public boolean Login() throws InterruptedException {
+    public boolean Login() {
         boolean success = false;
         try {
             String msg = GetMonitorMessage();
@@ -108,21 +108,16 @@ public class MessageParser {
 
             if (next != null) {
                 do {
-                    System.out.println("Next: " + next);
                     Execute(next);
                     msg = GetMonitorMessage();
                     next = GetNextCommand(msg, "");
-                } while (next != null || !next.equals("QUIT"));
-                System.out.println("donezo\n\n\n\n\n\n");
+                } while (next != null && !next.equals("QUIT"));
                 success = true;
             }
-
         } catch (NullPointerException n) {
             System.out.println("MessageParser [Login]: null pointer error "+
                 "at login:\n\t"+n);
         }
-
-        System.out.println("Success Value Login = "+success);
         return success;
     }
 
