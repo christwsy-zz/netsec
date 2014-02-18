@@ -193,13 +193,13 @@ public class MessageParser {
     }
 
     public void SendIt (String message) throws IOException {
-    try {
-        System.out.println("MessageParser [SendIt]: sent:\n\t"+message);
-        out.println(message);
-        if (out.checkError() == true) throw (new IOException());
-        out.flush();
-        if(out.checkError() == true) throw (new IOException());
-    } catch (IOException e) {} //Bubble the Exception upwards
+        try {
+            System.out.println("MessageParser [SendIt]: sent:\n\t"+message);
+            out.println(message);
+            if (out.checkError() == true) throw (new IOException());
+            out.flush();
+            if(out.checkError() == true) throw (new IOException());
+        } catch (IOException e) {} //Bubble the Exception upwards
     }
 
     //In future send parameters here so that diff commands are executed
