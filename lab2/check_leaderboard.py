@@ -41,7 +41,7 @@ def main(args):
     soup = parse_html(html)
     update_time = get_last_update_time(soup)
     print 'Last updated: %s seconds ago' % (secs_since_update(update_time))
-    print 'PTS:', find_points(soup, user)
+    print '%s\'s points: %s' % (user, find_points(soup, user))
 
 if __name__ == '__main__':
     main(sys.argv[1:])
