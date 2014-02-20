@@ -34,7 +34,7 @@ class Karn {
         }
     }
 
-   // Encrypt the string using the karn algorithm
+    // Encrypt the string using the karn algorithm
     String encrypt(String plaintext) {
         byte[] plain_left, plain_right;
         byte[] ciph_left, ciph_right;
