@@ -5,7 +5,7 @@ import java.security.*;
 
 class Karn {
     final int RADIX=32;
-    final int PADSIZE=40; // Plaintext buffer */
+    final int PADSIZE=40; // Plaintext buffer
 
     private byte key[];
     private byte key_left[];
@@ -104,10 +104,10 @@ class Karn {
         byte[] digest;
 
         // Convert to a BigInteger, extract the bytes
-        bi = new BigInteger(ciphertext,RADIX);
-        ...
+        bi = new BigInteger(ciphertext, RADIX);
+        //...
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ...
+        //...
         return StripPadding(out.toByteArray());
     }
 
@@ -118,7 +118,7 @@ class Karn {
 
         scratch = input.getBytes();
         int len = input.length();
-        ...
+        //...
         return (buffer.toByteArray());
     }
 
@@ -126,7 +126,7 @@ class Karn {
     private String StripPadding (byte input[]) {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         int i = 0;
-        ...
+        //...
         return (new String(buffer.toByteArray()));
     }
 }
