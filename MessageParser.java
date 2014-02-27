@@ -31,12 +31,12 @@ public class MessageParser {
 
     static String MyKey;
     String MonitorKey;
-    String sharedSecret;
     String first;
     ObjectInputStream oin = null;
     ObjectOutputStream oout = null;
 
     DiffieHellmanExchange dfe;
+    BigInteger sharedSecret;
     Karn karn;
 
     public MessageParser() {
@@ -70,21 +70,18 @@ public class MessageParser {
             //After IDENT has been sent-to handle partially encrypted msg group
             while(!(decrypt.trim().equals("WAITING:"))) {
                 if (temp.startsWith("RESULT: IDENT")) {
-                    temp = temp.split(" ")[2];
-                    MonitorKey = temp;
-                    System.out.println("Got monitor public key");
-                    BigInteger bi = new BigInteger(MonitorKey);
-                    sharedSecret = dfe.getSecret(bi);
+                    MonitorKey = temp.split(" ")[2];
+                    sharedSecret = dfe.getSecret(MonitorKey);
+                }
+                else if (sharedSecret != null) {
                     karn = new Karn(sharedSecret);
+                    System.out.println("encrypted temp: " + temp);
+                    System.out.println("decrypted: " + karn.decrypt(temp));
                 }
-                else {
-                    temp = in.readLine();
-                    System.out.println("temp: " + temp);
-                    System.out.println(karn.decrypt(temp));                    ;
-                    sMesg = sMesg.concat(" ");
-                    decrypt = temp;
-                    sMesg = sMesg.concat(decrypt);
-                }
+                temp = in.readLine();
+                sMesg = sMesg.concat(" ");
+                decrypt = temp;
+                sMesg = sMesg.concat(decrypt);
             } //sMesg now contains the Message Group sent by the Monitor
         } catch (IOException e) {
             System.out.println("MessageParser [getMonitorMessage]: error "+
@@ -128,12 +125,16 @@ public class MessageParser {
         try {
             String msg = GetMonitorMessage();
             String next = GetNextCommand(msg, "");
+            System.out.println("msg: " + msg);
+            System.out.println("next: " + next);
 
             if (next != null) {
                 do {
                     Execute(next);
                     msg = GetMonitorMessage();
                     next = GetNextCommand(msg, "");
+                    System.out.println("msg: " + msg);
+                    System.out.println("next: " + next);
                 } while (next != null && !next.equals("QUIT"));
                 success = true;
             }
@@ -207,6 +208,9 @@ public class MessageParser {
             } else if (sentmessage.trim().equals("RANDOM_PARTICIPANT_HOST_PORT")){
                 SendIt(sentmessage);
                 success = true;
+            }
+            else {
+                System.out.println("Got: " + sentmessage);
             }
         } catch (IOException e) {
             System.out.println("IOError:\n\t"+e);
