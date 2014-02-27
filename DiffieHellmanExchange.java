@@ -22,8 +22,9 @@ class DiffieHellmanExchange {
         return x_pub;
     }
 
-    public BigInteger getSecret (BigInteger monitorKey) {
-        s_secret = monitorKey.modPow(x, key.p);
+    public BigInteger getSecret (String mKey) {
+        BigInteger bi = new BigInteger(mKey, 32);
+        s_secret = bi.modPow(x, key.p);
         System.out.println("Client: shared secret computed!");
         return s_secret;
     }
