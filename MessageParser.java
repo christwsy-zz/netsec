@@ -31,11 +31,13 @@ public class MessageParser {
 
     static String MyKey;
     String MonitorKey;
+    String sharedSecret;
     String first;
     ObjectInputStream oin = null;
     ObjectOutputStream oout = null;
 
     DiffieHellmanExchange dfe;
+    Karn karn;
 
     public MessageParser() {
         filename = "passwd.dat";
@@ -56,6 +58,7 @@ public class MessageParser {
         }
     }
 
+    //TODO
     public String GetMonitorMessage() {
         String sMesg="", decrypt="";
         try {
@@ -70,12 +73,18 @@ public class MessageParser {
                     temp = temp.split(" ")[2];
                     MonitorKey = temp;
                     System.out.println("Got monitor public key");
+                    BigInteger bi = new BigInteger(MonitorKey);
+                    sharedSecret = dfe.getSecret(bi);
+                    karn = new Karn(sharedSecret);
                 }
-                System.out.println("temp: " + temp);
-                temp = in.readLine();
-                sMesg = sMesg.concat(" ");
-                decrypt = temp;
-                sMesg = sMesg.concat(decrypt);
+                else {
+                    temp = in.readLine();
+                    System.out.println("temp: " + temp);
+                    System.out.println(karn.decrypt(temp));                    ;
+                    sMesg = sMesg.concat(" ");
+                    decrypt = temp;
+                    sMesg = sMesg.concat(decrypt);
+                }
             } //sMesg now contains the Message Group sent by the Monitor
         } catch (IOException e) {
             System.out.println("MessageParser [getMonitorMessage]: error "+
