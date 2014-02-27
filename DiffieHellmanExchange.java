@@ -22,13 +22,8 @@ class DiffieHellmanExchange {
         return x_pub;
     }
 
-    // Send the client's public key to the server,
-    // Get the server's public key
-    // Build the secret
-    public BigInteger getSecret (BufferedReader in, PrintWriter out) throws IOException {
-        out.println(x_pub.toString());
-        BigInteger pkey = new BigInteger(in.readLine());
-        s_secret = pkey.modPow(x, key.p);
+    public BigInteger getSecret (BigInteger monitorKey) {
+        s_secret = monitorKey.modPow(x, key.p);
         System.out.println("Client: shared secret computed!");
         return s_secret;
     }
