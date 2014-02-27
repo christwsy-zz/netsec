@@ -75,7 +75,7 @@ public class MessageParser {
                 }
                 else if (sharedSecret != null) {
                     karn = new Karn(sharedSecret);
-                    System.out.println("encrypted temp: " + temp);
+                    System.out.println("\nencrypted temp: " + temp);
                     System.out.println("decrypted: " + karn.decrypt(temp));
                 }
                 temp = in.readLine();
