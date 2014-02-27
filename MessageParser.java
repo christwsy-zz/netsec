@@ -35,6 +35,8 @@ public class MessageParser {
     ObjectInputStream oin = null;
     ObjectOutputStream oout = null;
 
+    DiffieHellmanExchange dfe;
+
     public MessageParser() {
         filename = "passwd.dat";
         GetIdentification(); // Gets Password and Cookie from 'passwd.dat' file
@@ -45,6 +47,13 @@ public class MessageParser {
         PASSWORD = password;
         IDENT = ident;
         GetIdentification(); // Gets Password and Cookie from 'passwd.dat' file
+        try {
+            dfe = new DiffieHellmanExchange();
+            BigInteger pub = dfe.getDHParmMakePublicKey("DHKey");
+            MyKey = pub.toString();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     public String GetMonitorMessage() {
@@ -57,6 +66,12 @@ public class MessageParser {
 
             //After IDENT has been sent-to handle partially encrypted msg group
             while(!(decrypt.trim().equals("WAITING:"))) {
+                if (temp.startsWith("RESULT: IDENT")) {
+                    temp = temp.split(" ")[2];
+                    MonitorKey = temp;
+                    System.out.println("Got monitor public key");
+                }
+                System.out.println("temp: " + temp);
                 temp = in.readLine();
                 sMesg = sMesg.concat(" ");
                 decrypt = temp;
@@ -147,7 +162,9 @@ public class MessageParser {
             if (sentmessage.trim().equals("IDENT")) {
                 sentmessage = sentmessage.concat(" ");
                 sentmessage = sentmessage.concat(IDENT);
-                SendIt (sentmessage);
+                sentmessage = sentmessage.concat(" ");
+                sentmessage = sentmessage.concat(MyKey);
+                SendIt (sentmessage.trim());
                 success = true;
             } else if (sentmessage.trim().equals("PASSWORD")) {
                 sentmessage = sentmessage.concat(" ");
@@ -156,7 +173,7 @@ public class MessageParser {
                 success = true;
             } else if (sentmessage.trim().equals("HOST_PORT")) {
                 sentmessage = sentmessage.concat(" ");
-                sentmessage = sentmessage.concat(HOSTNAME);//hostname
+                sentmessage = sentmessage.concat(HOSTNAME);
                 sentmessage = sentmessage.concat(" ");
                 sentmessage = sentmessage.concat(String.valueOf(HOST_PORT));
                 SendIt (sentmessage);

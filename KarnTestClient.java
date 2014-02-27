@@ -33,7 +33,7 @@ public class KarnTestClient {
             out.println(ciphertext);
         // Leave
         } catch (Exception e) {
-            System.out.println("Yikes!");
+            System.out.println(e);
         }
     }
 }
