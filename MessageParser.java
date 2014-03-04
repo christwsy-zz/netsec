@@ -31,7 +31,7 @@ public class MessageParser {
 
     static String MyKey;
     String MonitorKey;
-    String first;
+    //String first;
     ObjectInputStream oin = null;
     ObjectOutputStream oout = null;
 
@@ -52,7 +52,7 @@ public class MessageParser {
         try {
             dfe = new DiffieHellmanExchange();
             BigInteger pub = dfe.getDHParmMakePublicKey("DHKey");
-            MyKey = pub.toString();
+            MyKey = pub.toString(32);
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -62,28 +62,24 @@ public class MessageParser {
     public String GetMonitorMessage() {
         String sMesg="", decrypt="";
         try {
-            String temp = in.readLine();
-            first = temp; // 1st
-            sMesg = temp;
-            decrypt = temp;
+            String temp;
 
             //After IDENT has been sent-to handle partially encrypted msg group
             while(!(decrypt.trim().equals("WAITING:"))) {
+                temp = in.readLine();
                 if (temp.startsWith("RESULT: IDENT")) {
                     MonitorKey = temp.split(" ")[2];
                     sharedSecret = dfe.getSecret(MonitorKey);
-                }
-                else if (sharedSecret != null) {
                     karn = new Karn(sharedSecret);
-                    System.out.println("\nencrypted temp: " + temp);
-                    String decrypted = karn.decrypt(temp);
-                    System.out.println("decrypted: " + decrypted);
                 }
-                temp = in.readLine();
+                else if (karn != null) {
+                    temp = karn.decrypt(temp);
+                }
                 sMesg = sMesg.concat(" ");
                 decrypt = temp;
                 sMesg = sMesg.concat(decrypt);
-            } //sMesg now contains the Message Group sent by the Monitor
+            }
+            return sMesg; //sMesg now contains the Message Group sent by the Monitor
         } catch (IOException e) {
             System.out.println("MessageParser [getMonitorMessage]: error "+
             "in GetMonitorMessage:\n\t"+e+this);
@@ -102,6 +98,7 @@ public class MessageParser {
             "EXCEPTION!\n\t"+this);
             sMesg="";
         }
+        System.out.println("returning smesg");
         return sMesg;
     }
 
@@ -170,6 +167,7 @@ public class MessageParser {
     public boolean Execute (String sentmessage) {
         boolean success = false;
         try {
+            System.out.println("sentmessage: " + sentmessage.trim());
             if (sentmessage.trim().equals("IDENT")) {
                 sentmessage = sentmessage.concat(" ");
                 sentmessage = sentmessage.concat(IDENT);
