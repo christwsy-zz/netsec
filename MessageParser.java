@@ -150,6 +150,7 @@ public class MessageParser {
             if (sentmessage.trim().equals("PARTICIPANT_HOST_PORT")) {
                 sentmessage = sentmessage.concat(" ");
                 sentmessage = sentmessage.concat(arg);
+                sentmessage = karn.encrypt(sentmessage);
                 SendIt(sentmessage);
                 success = true;
             }
@@ -178,6 +179,7 @@ public class MessageParser {
             } else if (sentmessage.trim().equals("PASSWORD")) {
                 sentmessage = sentmessage.concat(" ");
                 sentmessage = sentmessage.concat(PASSWORD);
+                sentmessage = karn.encrypt(sentmessage);
                 SendIt (sentmessage.trim());
                 success = true;
             } else if (sentmessage.trim().equals("HOST_PORT")) {
@@ -185,26 +187,33 @@ public class MessageParser {
                 sentmessage = sentmessage.concat(HOSTNAME);
                 sentmessage = sentmessage.concat(" ");
                 sentmessage = sentmessage.concat(String.valueOf(HOST_PORT));
+                sentmessage = karn.encrypt(sentmessage);
                 SendIt (sentmessage);
                 success = true;
             } else if (sentmessage.trim().equals("ALIVE")) {
                 sentmessage = sentmessage.concat(" ");
                 sentmessage = sentmessage.concat(COOKIE);
+                sentmessage = karn.encrypt(sentmessage);
                 SendIt (sentmessage);
                 success = true;
             } else if (sentmessage.trim().equals("QUIT")) {
+                sentmessage = karn.encrypt(sentmessage);
                 SendIt(sentmessage);
                 success = true;
             } else if (sentmessage.trim().equals("SIGN_OFF")) {
+                sentmessage = karn.encrypt(sentmessage);
                 SendIt(sentmessage);
                 success = true;
             } else if (sentmessage.trim().equals("GET_GAME_IDENTS")) {
+                sentmessage = karn.encrypt(sentmessage);
                 SendIt(sentmessage);
                 success = true;
             } else if (sentmessage.trim().equals("PARTICIPANT_STATUS")) {
+                sentmessage = karn.encrypt(sentmessage);
                 SendIt(sentmessage);
                 success = true;
             } else if (sentmessage.trim().equals("RANDOM_PARTICIPANT_HOST_PORT")){
+                sentmessage = karn.encrypt(sentmessage);
                 SendIt(sentmessage);
                 success = true;
             }
