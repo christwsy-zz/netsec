@@ -38,6 +38,7 @@ public class MessageParser {
     DiffieHellmanExchange dfe;
     BigInteger sharedSecret;
     Karn karn;
+    ZKP zkp;
 
     public MessageParser() {
         filename = "passwd.dat";
@@ -56,6 +57,7 @@ public class MessageParser {
         } catch (Exception e) {
             System.out.println(e);
         }
+        zkp = new ZKP();
     }
 
     //TODO
@@ -216,8 +218,15 @@ public class MessageParser {
                 sentmessage = karn.encrypt(sentmessage);
                 SendIt(sentmessage);
                 success = true;
-            }
-            else {
+            } else if (sentmessage.trim().equals("PUBLIC_KEY")) {
+                sentmessage = sentmessage.concat(" ");
+                sentmessage = sentmessage.concat(zkp.v.toString(32));
+                sentmessage = sentmessage.concat(" ");
+                sentmessage = sentmessage.concat(zkp.n.toString(32));
+                sentmessage = karn.encrypt(sentmessage);
+                SendIt (sentmessage);
+                success = true;
+            } else {
                 System.out.println("Got: " + sentmessage);
             }
         } catch (IOException e) {
