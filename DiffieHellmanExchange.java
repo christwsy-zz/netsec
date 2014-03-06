@@ -16,9 +16,9 @@ class DiffieHellmanExchange {
         ObjectInputStream oin = new ObjectInputStream(fis);
         key = (DHKey)oin.readObject();
         oin.close();
-        SecureRandom sr = new SecureRandom();  // Get a secure random number
-        x = new BigInteger(keysize, sr);  // Generate the secure secret key
-        x_pub = key.g.modPow(x, key.p);   // Compute the public key from p,g
+        SecureRandom sr = new SecureRandom();   // Get a secure random number
+        x = new BigInteger(keysize, sr);        // Generate the secure secret key
+        x_pub = key.g.modPow(x, key.p);         // Compute the public key from p,g
         return x_pub;
     }
 
