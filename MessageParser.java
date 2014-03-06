@@ -39,6 +39,7 @@ public class MessageParser {
     BigInteger sharedSecret;
     Karn karn;
     ZKP zkp;
+    int ROUNDS = 7;
 
     public MessageParser() {
         filename = "passwd.dat";
@@ -223,6 +224,12 @@ public class MessageParser {
                 sentmessage = sentmessage.concat(zkp.v.toString(32));
                 sentmessage = sentmessage.concat(" ");
                 sentmessage = sentmessage.concat(zkp.n.toString(32));
+                sentmessage = karn.encrypt(sentmessage);
+                SendIt (sentmessage);
+                success = true;
+            } else if (sentmessage.trim().equals("ROUNDS")) {
+                sentmessage = sentmessage.concat(" ");
+                sentmessage = sentmessage.concat(Integer.toString(ROUNDS));
                 sentmessage = karn.encrypt(sentmessage);
                 SendIt (sentmessage);
                 success = true;
