@@ -58,7 +58,15 @@ public class MessageParser {
         } catch (Exception e) {
             System.out.println(e);
         }
-        zkp = new ZKP();
+        zkp = new ZKP(ROUNDS);
+    }
+
+    // assign class variables from what is being
+    // read from the monitor
+    public void handleMsg(String msg) {
+        if (msg.startsWith("RESULT: ROUNDS")) {
+            ROUNDS = Integer.parseInt(msg.split(" ")[2]);
+        }
     }
 
     //TODO
@@ -82,7 +90,8 @@ public class MessageParser {
                 decrypt = temp;
                 sMesg = sMesg.concat(decrypt);
             }
-            return sMesg; //sMesg now contains the Message Group sent by the Monitor
+            handleMsg(sMesg);
+            return sMesg;   //sMesg now contains the Message Group sent by the Monitor
         } catch (IOException e) {
             System.out.println("MessageParser [getMonitorMessage]: error "+
             "in GetMonitorMessage:\n\t"+e+this);
@@ -229,6 +238,19 @@ public class MessageParser {
                 success = true;
             } else if (sentmessage.trim().equals("ROUNDS")) {
                 sentmessage = sentmessage.concat(" ");
+                sentmessage = sentmessage.concat(Integer.toString(ROUNDS));
+                sentmessage = karn.encrypt(sentmessage);
+                SendIt (sentmessage);
+                success = true;
+            } else if (sentmessage.trim().equals("AUTHORIZE_SET")) {
+                zkp.doRounds();
+                for (int i=0; i<zkp.rounds.length; i++) {
+                    sentmessage = sentmessage.concat(" ");
+                    sentmessage = sentmessage.concat(zkp.rounds[i].toString(32));
+                    sentmessage = karn.encrypt(sentmessage);
+                    SendIt (sentmessage);
+                    success = true;
+                }
                 sentmessage = sentmessage.concat(Integer.toString(ROUNDS));
                 sentmessage = karn.encrypt(sentmessage);
                 SendIt (sentmessage);
