@@ -30,7 +30,7 @@ class ZKP {
     public void genSubsetA() {
         subsetA = new int[(rounds.length/2) + 1];
         int subsetLoc = 0;
-        for (int i=0; i<rounds.length; i +=2) {
+        for (int i=0; i<rounds.length; i+=2) {
             subsetA[subsetLoc] = i;
         }
     }
@@ -39,6 +39,13 @@ class ZKP {
         subsetK = new BigInteger[subsetA.length];
         for (int i=0; i<subsetA.length; i++) {
             subsetK[i] = s.multiply(rounds[i]).mod(n);
+        }
+    }
+
+    public void calcSubsetJ() {
+        subsetJ = new BigInteger[subsetA.length/2];
+        for (int i=1; i<subsetA.length; i+=2) {
+            subsetJ[i] = rounds[i].mod(n);
         }
     }
 

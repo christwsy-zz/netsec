@@ -67,26 +67,29 @@ public class MessageParser {
     public void handleMsg(String msg) {
         if (msg.startsWith("RESULT: ROUNDS")) {
             ROUNDS = Integer.parseInt(msg.split(" ")[2]);
-        }
-        else if (msg.startsWith("RESULT: AUTHORIZE_SET")) {
+        } else if (msg.startsWith("RESULT: AUTHORIZE_SET")) {
             String[] splitMsg = msg.split(" ");
             BigInteger[] authorize_set = new BigInteger[splitMsg.length-2];
             for (int i=2; i<splitMsg.length; i++) {
                 authorize_set[i-2] = new BigInteger(splitMsg[i], 32);
             }
-        }
-        else if (msg.startsWith("RESULT: SUBSET_A")) {
+        } else if (msg.startsWith("RESULT: SUBSET_A")) {
             String[] splitMsg = msg.split(" ");
             zkp.subsetA = new int[splitMsg.length-2];
             for (int i=2; i<splitMsg.length; i++) {
                 zkp.subsetA[i-2] = Integer.parseInt(splitMsg[i]);
             }
-        }
-        else if (msg.startsWith("RESULT: SUBSET_K")) {
+        } else if (msg.startsWith("RESULT: SUBSET_K")) {
             String[] splitMsg = msg.split(" ");
             zkp.subsetK = new BigInteger[splitMsg.length-2];
             for (int i=2; i<splitMsg.length; i++) {
                 zkp.subsetK[i-2] = new BigInteger(splitMsg[i], 32);
+            }
+        } else if (msg.startsWith("RESULT: SUBSET_J")) {
+            String[] splitMsg = msg.split(" ");
+            zkp.subsetJ = new BigInteger[splitMsg.length-2];
+            for (int i=2; i<splitMsg.length; i++) {
+                zkp.subsetJ[i-2] = new BigInteger(splitMsg[i], 32);
             }
         }
     }
@@ -287,6 +290,15 @@ public class MessageParser {
                 for (int i=0; i<zkp.subsetK.length; i++) {
                     sentmessage = sentmessage.concat(" ");
                     sentmessage = sentmessage.concat(zkp.subsetK[i].toString(32));
+                }
+                sentmessage = karn.encrypt(sentmessage);
+                SendIt (sentmessage);
+                success = true;
+            } else if (sentmessage.trim().equals("SUBSET_J")) {
+                zkp.calcSubsetJ();
+                for (int i=0; i<zkp.subsetJ.length; i++) {
+                    sentmessage = sentmessage.concat(" ");
+                    sentmessage = sentmessage.concat(zkp.subsetJ[i].toString(32));
                 }
                 sentmessage = karn.encrypt(sentmessage);
                 SendIt (sentmessage);
