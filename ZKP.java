@@ -6,8 +6,11 @@ class ZKP {
     BigInteger n;
     BigInteger v;
     int size;
-    BigInteger[] rounds;
     SecureRandom sr;
+    BigInteger[] rounds;
+    int[] subsetA;
+    BigInteger[] subsetK;
+    BigInteger[] subsetJ;
 
     public ZKP (int numRounds) {
         size = 1024;
@@ -21,6 +24,14 @@ class ZKP {
     public void doRounds() {
         for (int i=0; i < rounds.length; i++) {
             rounds[i] = new BigInteger(size, sr).modPow(new BigInteger("2"), n);
+        }
+    }
+
+    public void getSubsetA() {
+        subsetA = new int[(rounds.length/2) + 1];
+        int subsetLoc = 0;
+        for (int i=0; i<rounds.length; i +=2) {
+            subsetA[subsetLoc] = i;
         }
     }
 

@@ -79,9 +79,9 @@ public class MessageParser {
         }
         else if (msg.startsWith("RESULT: SUBSET_A")) {
             String[] splitMsg = msg.split(" ");
-            BigInteger[] subset_a = new BigInteger[splitMsg.length-2];
+            zkp.subsetA = new int[splitMsg.length-2];
             for (int i=2; i<splitMsg.length; i++) {
-                subset_a[i-2] = new BigInteger(splitMsg[i], 32);
+                zkp.subsetA[i-2] = Integer.parseInt(splitMsg[i]);
             }
         }
     }
@@ -269,9 +269,10 @@ public class MessageParser {
                 SendIt (sentmessage);
                 success = true;
             } else if (sentmessage.trim().equals("SUBSET_A")) {
-                for (int i=0; i<zkp.rounds.length; i +=2) {
+                zkp.getSubsetA();
+                for (int i=0; i<zkp.subsetA.length; i++) {
                     sentmessage = sentmessage.concat(" ");
-                    sentmessage = sentmessage.concat(Integer.toString(i));
+                    sentmessage = sentmessage.concat(Integer.toString(zkp.subsetA[i]));
                 }
                 sentmessage = karn.encrypt(sentmessage);
                 SendIt (sentmessage);
