@@ -38,7 +38,7 @@ class ZKP {
     public void calcSubsetK() {
         subsetK = new BigInteger[subsetA.length];
         for (int i=0; i<subsetA.length; i++) {
-            subsetK[i] = s.multiply(rounds[i]).mod(n);
+            subsetK[i] = s.multiply(rounds[subsetA[i]]).mod(n);
         }
     }
 
@@ -55,9 +55,11 @@ class ZKP {
     }
 
     public void calcSubsetJ() {
-        subsetJ = new BigInteger[subsetA.length/2];
-        for (int i=1; i<subsetA.length; i+=2) {
-            subsetJ[i-2] = rounds[i].mod(n);
+        subsetJ = new BigInteger[rounds.length/2];
+        int j = 0;
+        for (int i=1; i<rounds.length; i+=2) {
+            subsetJ[j] = rounds[i].mod(n);
+            j++;
         }
     }
 
