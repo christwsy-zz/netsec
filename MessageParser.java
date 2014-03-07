@@ -38,8 +38,10 @@ public class MessageParser {
     DiffieHellmanExchange dfe;
     BigInteger sharedSecret;
     Karn karn;
+
     ZKP zkp;
     int ROUNDS = 7;
+    BigInteger[] authorize_set;
 
     public MessageParser() {
         filename = "passwd.dat";
@@ -66,6 +68,13 @@ public class MessageParser {
     public void handleMsg(String msg) {
         if (msg.startsWith("RESULT: ROUNDS")) {
             ROUNDS = Integer.parseInt(msg.split(" ")[2]);
+        }
+        else if (msg.startsWith("RESULT: AUTHORIZE_SET")) {
+            String[] splitMsg = msg.split(" ");
+            BigInteger[] authorize_set = new BigInteger[splitMsg.length-2];
+            for (int i=2; i<splitMsg.length; i++) {
+                authorize_set[i-2] = new BigInteger(splitMsg[i], 32);
+            }
         }
     }
 
