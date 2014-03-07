@@ -63,7 +63,7 @@ class ZKP {
         }
     }
 
-    public boolean checkSubsetJ(String msg) {
+    public boolean checkSubsetJ() {
         int j = 0;
         for (int i=1 ; i<rounds.length; i += 2) {
             if (!rounds[i].equals(subsetJ[j])) {
@@ -72,6 +72,10 @@ class ZKP {
             j++;
         }
         return true;
+    }
+
+    public boolean checkSubsets() {
+        return checkSubsetK() && checkSubsetJ();
     }
 
     public static void main(String[] args) {
