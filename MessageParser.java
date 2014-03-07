@@ -303,6 +303,16 @@ public class MessageParser {
                 sentmessage = karn.encrypt(sentmessage);
                 SendIt (sentmessage);
                 success = true;
+            } else if (sentmessage.trim().equals("TRANSFER_RESPONSE")) {
+                sentmessage = sentmessage.concat(" ");
+                if (zkp.checkSubsets()) {
+                    sentmessage = sentmessage.concat("ACCEPT");
+                } else {
+                    sentmessage = sentmessage.concat("DECLINE");
+                }
+                sentmessage = karn.encrypt(sentmessage);
+                SendIt (sentmessage);
+                success = true;
             } else {
                 System.out.println("Got: " + sentmessage);
             }
