@@ -42,11 +42,34 @@ class ZKP {
         }
     }
 
+    public boolean checkSubsetK() {
+        int k = 0;
+        for (int i=0 ; i<rounds.length; i += 2) {
+            BigInteger a1 = rounds[i].multiply(v).mod(n);
+            if (!a1.equals(subsetK[k])) {
+                return false;
+            }
+            k++;
+        }
+        return true;
+    }
+
     public void calcSubsetJ() {
         subsetJ = new BigInteger[subsetA.length/2];
         for (int i=1; i<subsetA.length; i+=2) {
-            subsetJ[i] = rounds[i].mod(n);
+            subsetJ[i-2] = rounds[i].mod(n);
         }
+    }
+
+    public boolean checkSubsetJ(String msg) {
+        int j = 0;
+        for (int i=1 ; i<rounds.length; i += 2) {
+            if (!rounds[i].equals(subsetJ[j])) {
+                return false;
+            }
+            j++;
+        }
+        return true;
     }
 
     public static void main(String[] args) {
