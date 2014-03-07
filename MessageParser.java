@@ -42,6 +42,7 @@ public class MessageParser {
     ZKP zkp;
     int ROUNDS = 7;
     BigInteger[] authorize_set;
+    BigInteger[] subset_a;
 
     public MessageParser() {
         filename = "passwd.dat";
@@ -74,6 +75,13 @@ public class MessageParser {
             BigInteger[] authorize_set = new BigInteger[splitMsg.length-2];
             for (int i=2; i<splitMsg.length; i++) {
                 authorize_set[i-2] = new BigInteger(splitMsg[i], 32);
+            }
+        }
+        else if (msg.startsWith("RESULT: SUBSET_A")) {
+            String[] splitMsg = msg.split(" ");
+            BigInteger[] subset_a = new BigInteger[splitMsg.length-2];
+            for (int i=2; i<splitMsg.length; i++) {
+                subset_a[i-2] = new BigInteger(splitMsg[i], 32);
             }
         }
     }
@@ -256,8 +264,16 @@ public class MessageParser {
                 for (int i=0; i<zkp.rounds.length; i++) {
                     sentmessage = sentmessage.concat(" ");
                     sentmessage = sentmessage.concat(zkp.rounds[i].toString(32));
-                    sentmessage = karn.encrypt(sentmessage);
                 }
+                sentmessage = karn.encrypt(sentmessage);
+                SendIt (sentmessage);
+                success = true;
+            } else if (sentmessage.trim().equals("SUBSET_A")) {
+                for (int i=0; i<zkp.rounds.length; i +=2) {
+                    sentmessage = sentmessage.concat(" ");
+                    sentmessage = sentmessage.concat(Integer.toString(i));
+                }
+                sentmessage = karn.encrypt(sentmessage);
                 SendIt (sentmessage);
                 success = true;
             } else {
