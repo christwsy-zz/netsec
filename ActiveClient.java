@@ -58,8 +58,8 @@ public class ActiveClient extends MessageParser implements Runnable {
                     if (IsVerified == 0) System.exit(1);
                 }
 
-                System.out.println("Trying request.....");
-                Execute("TRANSFER_REQUEST");
+                //System.out.println("Trying request.....");
+                //Execute("TRANSFER_REQUEST");
 
                 /*
                 System.out.println("***************************");

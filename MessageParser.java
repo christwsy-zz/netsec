@@ -52,12 +52,11 @@ public class MessageParser {
         PASSWORD = password;
         IDENT = ident;
         GetIdentification(); // Gets Password and Cookie from 'passwd.dat' file
+        dfe = new DiffieHellmanExchange();
         try {
-            dfe = new DiffieHellmanExchange();
-            BigInteger pub = dfe.getDHParmMakePublicKey("DHKey");
-            MyKey = pub.toString(32);
+            MyKey = dfe.getDHParmMakePublicKey("DHKey").toString(32);
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("Error making public key");
         }
         zkp = new ZKP(ROUNDS);
     }
@@ -98,22 +97,35 @@ public class MessageParser {
     public String GetMonitorMessage() {
         String sMesg="", decrypt="";
         try {
-            String temp;
+            String temp = "";
 
             //After IDENT has been sent-to handle partially encrypted msg group
             while(!(decrypt.trim().equals("WAITING:"))) {
                 temp = in.readLine();
+                //System.out.println("temp: " + temp);
                 if (temp.startsWith("RESULT: IDENT")) {
                     MonitorKey = temp.split(" ")[2];
                     sharedSecret = dfe.getSecret(MonitorKey);
+                    karn = null;
                     karn = new Karn(sharedSecret);
+                    decrypt = temp;
                 }
                 else if (karn != null) {
-                    temp = karn.decrypt(temp);
+                    try {
+                        decrypt = karn.decrypt(temp);
+                        //System.out.println("decrypt: " + decrypt);
+                    } catch (Exception e) {
+                        decrypt = temp;
+                        //System.out.println("not decrpyted: " + decrypt);
+                    }
+                    sMesg = sMesg.concat(" ");
+                    sMesg = sMesg.concat(decrypt);
                 }
-                sMesg = sMesg.concat(" ");
-                decrypt = temp;
-                sMesg = sMesg.concat(decrypt);
+                else {
+                    decrypt = temp;
+                    sMesg = sMesg.concat(" ");
+                    sMesg = sMesg.concat(decrypt);
+                }
             }
             handleMsg(sMesg);
             return sMesg;   //sMesg now contains the Message Group sent by the Monitor
@@ -125,7 +137,8 @@ public class MessageParser {
             sMesg = "";
         } catch (NumberFormatException o) {
             System.out.println("MessageParser [getMonitorMessage]: number "+
-                "format error:\n\t"+o+this);
+                "format error:\n\t"+o);
+                //"format error:\n\t"+o+this);
             sMesg="";
         } catch (NoSuchElementException ne) {
             System.out.println("MessageParser [getMonitorMessage]: no such "+
@@ -210,6 +223,11 @@ public class MessageParser {
                 sentmessage = sentmessage.concat(" ");
                 sentmessage = sentmessage.concat(IDENT);
                 sentmessage = sentmessage.concat(" ");
+                try {
+                    MyKey = dfe.getDHParmMakePublicKey("DHKey").toString(32);
+                } catch (Exception e) {
+                    System.out.println("Error making public key");
+                }
                 sentmessage = sentmessage.concat(MyKey);
                 SendIt (sentmessage.trim());
                 success = true;
@@ -254,6 +272,7 @@ public class MessageParser {
                 SendIt(sentmessage);
                 success = true;
             } else if (sentmessage.trim().equals("PUBLIC_KEY")) {
+                System.out.println("Sending public key!!!!");
                 sentmessage = sentmessage.concat(" ");
                 sentmessage = sentmessage.concat(zkp.v.toString(32));
                 sentmessage = sentmessage.concat(" ");
