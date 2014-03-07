@@ -257,11 +257,7 @@ public class MessageParser {
                     sentmessage = sentmessage.concat(" ");
                     sentmessage = sentmessage.concat(zkp.rounds[i].toString(32));
                     sentmessage = karn.encrypt(sentmessage);
-                    SendIt (sentmessage);
-                    success = true;
                 }
-                sentmessage = sentmessage.concat(Integer.toString(ROUNDS));
-                sentmessage = karn.encrypt(sentmessage);
                 SendIt (sentmessage);
                 success = true;
             } else {
