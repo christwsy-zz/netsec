@@ -313,6 +313,18 @@ public class MessageParser {
                 sentmessage = karn.encrypt(sentmessage);
                 SendIt (sentmessage);
                 success = true;
+            } else if (sentmessage.trim().equals("TRANSFER_REQUEST")) {
+                sentmessage = sentmessage.concat(" ");
+                sentmessage = sentmessage.concat("JOHNE");
+                sentmessage = sentmessage.concat(" ");
+                sentmessage = sentmessage.concat("10");
+                sentmessage = sentmessage.concat(" ");
+                sentmessage = sentmessage.concat("FROM");
+                sentmessage = sentmessage.concat(" ");
+                sentmessage = sentmessage.concat("SIYUE");
+                sentmessage = karn.encrypt(sentmessage);
+                SendIt (sentmessage);
+                success = true;
             } else {
                 System.out.println("Got: " + sentmessage);
             }
