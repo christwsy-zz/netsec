@@ -31,7 +31,6 @@ public class MessageParser {
 
     static String PubKey;
     String MonitorKey;
-    //String first;
     ObjectInputStream oin = null;
     ObjectOutputStream oout = null;
 
@@ -40,7 +39,7 @@ public class MessageParser {
     Karn karn;
 
     ZKP zkp;
-    int ROUNDS = 7;
+    int ROUNDS = 8;
 
     public MessageParser() {
         filename = "passwd.dat";
@@ -162,8 +161,8 @@ public class MessageParser {
             String temp = t.nextToken();
             while (!(temp.trim().equals(sDefault.trim()))) temp = t.nextToken();
             temp = t.nextToken();
-            System.out.println("MessageParser [getNextCommand]: returning:\n\t"+
-                temp);
+            //System.out.println("MessageParser [getNextCommand]: returning:\n\t"+
+            //    temp);
             return temp;  //returns what the monitor wants
         } catch (NoSuchElementException e) {  return null;  }
     }
@@ -218,7 +217,7 @@ public class MessageParser {
     public boolean Execute (String sentmessage) {
         boolean success = false;
         try {
-            System.out.println("sentmessage: " + sentmessage.trim());
+            System.out.println("sentmessage: " + sentmessage.trim() + "\n");
             if (sentmessage.trim().equals("IDENT")) {
                 sentmessage = sentmessage.concat(" ");
                 sentmessage = sentmessage.concat(IDENT);
@@ -273,7 +272,6 @@ public class MessageParser {
                 SendIt(sentmessage);
                 success = true;
             } else if (sentmessage.trim().equals("PUBLIC_KEY")) {
-                System.out.println("Sending public key!!!!");
                 sentmessage = sentmessage.concat(" ");
                 sentmessage = sentmessage.concat(zkp.v.toString(32));
                 sentmessage = sentmessage.concat(" ");
@@ -302,6 +300,7 @@ public class MessageParser {
                     sentmessage = sentmessage.concat(" ");
                     sentmessage = sentmessage.concat(Integer.toString(zkp.subsetA[i]));
                 }
+                System.out.println("\n\n\n" + sentmessage + "\n\n\n\n");
                 sentmessage = karn.encrypt(sentmessage);
                 SendIt (sentmessage);
                 success = true;
@@ -360,7 +359,7 @@ public class MessageParser {
 
     public void SendIt (String message) throws IOException {
         try {
-            System.out.println("MessageParser [SendIt]: sent:\n\t"+message);
+            //System.out.println("MessageParser [SendIt]: sent:\n\t"+message);
             out.println(message);
             if (out.checkError() == true) throw (new IOException());
             out.flush();
