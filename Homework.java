@@ -6,7 +6,7 @@ import java.lang.*;
 class Homework {
    public static String MONITOR_NAME = "helios.ececs.uc.edu";
    public static int MONITOR_PORT = 8180;
-   public static int HOST_PORT = 20000 +(int)(Math.random()*1000);
+   public static int HOST_PORT = 20167;
    public static int MAX = 5;
    ActiveClient ac;
    Server s;
@@ -23,6 +23,9 @@ class Homework {
         } else {
             MONITOR_NAME = new String(args[0]);
             MONITOR_PORT = Integer.parseInt(args[1]);
+            if (!MONITOR_NAME.equals("localhost")) {
+                HOST_PORT = 20000 + (int)(Math.random()*1000);
+            }
             Homework hw = new Homework(args[2], "-----");
             hw.ac.start(); //Start the Active Client
             hw.s.start();  //Start the Server
