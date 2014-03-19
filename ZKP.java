@@ -32,6 +32,7 @@ class ZKP {
         int subsetLoc = 0;
         for (int i=0; i<rounds.length; i+=2) {
             subsetA[subsetLoc] = i;
+            subsetLoc++;
         }
     }
 
