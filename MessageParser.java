@@ -29,7 +29,7 @@ public class MessageParser {
     static String ResourceFileName = "Resources.dat";
     String[] cmdArr = new String[COMMAND_LIMIT];
 
-    static String MyKey;
+    static String PubKey;
     String MonitorKey;
     //String first;
     ObjectInputStream oin = null;
@@ -54,9 +54,10 @@ public class MessageParser {
         GetIdentification(); // Gets Password and Cookie from 'passwd.dat' file
         dfe = new DiffieHellmanExchange();
         try {
-            MyKey = dfe.getDHParmMakePublicKey("DHKey").toString(32);
+            PubKey = dfe.getDHParmMakePublicKey("DHKey").toString(32);
         } catch (Exception e) {
             System.out.println("Error making public key");
+            System.out.println(e);
         }
         zkp = new ZKP(ROUNDS);
     }
@@ -224,11 +225,12 @@ public class MessageParser {
                 sentmessage = sentmessage.concat(IDENT);
                 sentmessage = sentmessage.concat(" ");
                 try {
-                    MyKey = dfe.getDHParmMakePublicKey("DHKey").toString(32);
+                    PubKey = dfe.getDHParmMakePublicKey("DHKey").toString(32);
                 } catch (Exception e) {
                     System.out.println("Error making public key");
+                    System.out.println(e);
                 }
-                sentmessage = sentmessage.concat(MyKey);
+                sentmessage = sentmessage.concat(PubKey);
                 SendIt (sentmessage.trim());
                 success = true;
             } else if (sentmessage.trim().equals("PASSWORD")) {
