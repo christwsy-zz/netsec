@@ -107,7 +107,6 @@ public class MessageParser {
                 if (temp.startsWith("RESULT: IDENT")) {
                     MonitorKey = temp.split(" ")[2];
                     sharedSecret = dfe.getSecret(MonitorKey);
-                    karn = null;
                     karn = new Karn(sharedSecret);
                     decrypt = temp;
                 }
