@@ -14,6 +14,7 @@ public class ActiveClient extends MessageParser implements Runnable {
     public int SleepMode;
     int DELAY = 90000;  //Interval after which a new Active Client is started
     long prevTime,present;
+    String name;
 
     public ActiveClient() {
         super("[no-name]", "[no-password]");
@@ -30,6 +31,7 @@ public class ActiveClient extends MessageParser implements Runnable {
             MonitorName = mname;
             MONITOR_PORT = p;
             LOCAL_PORT = lp;
+            name = name;
         } catch (NullPointerException n) {
             System.out.println("Active Client [Constructor]: TIMEOUT Error: "+n);
         }
@@ -46,6 +48,7 @@ public class ActiveClient extends MessageParser implements Runnable {
         while(Thread.currentThread() == runner) {
             try {
                 System.out.print("Active Client: trying monitor: "+MonitorName+ " port: "+MONITOR_PORT+"...");
+                System.out.println("\n\n\n\n\n\n\n NAME: " + name + "\n\n\n\n\n\n\n\n\n\n");
                 toMonitor = new Socket(MonitorName, MONITOR_PORT);
                 System.out.println("completed.");
                 out = new PrintWriter(toMonitor.getOutputStream(), true);
@@ -58,8 +61,23 @@ public class ActiveClient extends MessageParser implements Runnable {
                     if (IsVerified == 0) System.exit(1);
                 }
 
-                //System.out.println("Trying request.....");
-                //Execute("TRANSFER_REQUEST");
+                /*
+                System.out.println("\nTrying request.....");
+                Execute("TRANSFER_REQUEST");
+
+                String msg = GetMonitorMessage();
+                String next = GetNextCommand(msg, "");
+
+                if (next != null) {
+                    do {
+                        System.out.println("msg: " + msg);
+                        System.out.println("next: " + next);
+                        Execute(next);
+                        msg = GetMonitorMessage();
+                        next = GetNextCommand(msg, "");
+                    } while (next != null && !next.equals("QUIT"));
+                }
+                */
 
                 /*
                 System.out.println("***************************");
