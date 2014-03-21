@@ -28,7 +28,11 @@ class ZKP {
     }
 
     public void genSubsetA() {
-        subsetA = new int[(rounds.length/2) + 1];
+        if (rounds.length % 2 == 0) {
+            subsetA = new int[(rounds.length/2)];
+        } else {
+            subsetA = new int[(rounds.length/2 + 1)];
+        }
         int subsetLoc = 0;
         for (int i=0; i<rounds.length; i+=2) {
             subsetA[subsetLoc] = i;
@@ -44,14 +48,19 @@ class ZKP {
     }
 
     public boolean checkSubsetK() {
+        System.out.println("starting subset k");
+        System.out.println(subsetK[0]);
+        System.out.println("done checking subset k");
         int k = 0;
         for (int i=0 ; i<rounds.length; i += 2) {
             BigInteger a1 = rounds[i].multiply(v).mod(n);
             if (!a1.equals(subsetK[k])) {
+                System.out.println("subset k failed");
                 return false;
             }
             k++;
         }
+        System.out.println("subset k passed");
         return true;
     }
 
@@ -65,21 +74,25 @@ class ZKP {
     }
 
     public boolean checkSubsetJ() {
+        System.out.println("starting subset j");
         int j = 0;
         for (int i=1 ; i<rounds.length; i += 2) {
             if (!rounds[i].equals(subsetJ[j])) {
+                System.out.println("subset j failed");
                 return false;
             }
             j++;
         }
+        System.out.println("subset j passed");
         return true;
     }
 
     public boolean checkSubsets() {
-        return checkSubsetK() && checkSubsetJ();
+        boolean check = checkSubsetK() && checkSubsetJ();
+        return check;
     }
 
     public static void main(String[] args) {
-        ZKP a =  new ZKP(7);
+        ZKP a =  new ZKP(8);
     }
 }
