@@ -126,6 +126,7 @@ public class MessageParser {
                     sMesg = sMesg.concat(decrypt);
                 }
             }
+            sMesg = sMest.trim();
             handleMsg(sMesg);
             return sMesg;   //sMesg now contains the Message Group sent by the Monitor
         } catch (IOException e) {
