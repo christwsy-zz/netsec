@@ -3,6 +3,8 @@ import java.net.*;
 import java.util.*;
 import java.lang.*;
 import java.awt.*;
+import java.security.*;
+import java.math.*;
 
 public class ActiveClient extends MessageParser implements Runnable {
 
@@ -14,6 +16,7 @@ public class ActiveClient extends MessageParser implements Runnable {
     public int SleepMode;
     int DELAY = 90000;  //Interval after which a new Active Client is started
     long prevTime,present;
+    SecureRandom randy;
     String name;
 
     public ActiveClient() {
@@ -32,6 +35,7 @@ public class ActiveClient extends MessageParser implements Runnable {
             MONITOR_PORT = p;
             LOCAL_PORT = lp;
             name = name;
+            randy = new SecureRandom();
         } catch (NullPointerException n) {
             System.out.println("Active Client [Constructor]: TIMEOUT Error: "+n);
         }
@@ -97,9 +101,13 @@ public class ActiveClient extends MessageParser implements Runnable {
                 String msg = GetMonitorMessage();
                 System.out.println("ActiveClient [PARTICIPANT_STATUS]:\n\t"+msg);
                 }
-                ChangePassword(PASSWORD);
-                System.out.println("Password:"+PASSWORD);
                 */
+                System.out.println("\nGenerating new password");
+                //BigInteger temp = new BigInteger(256, randy);
+                //String new_pass = temp.toString();
+                String new_pass = "testing";
+                ChangePassword(new_pass);
+                System.out.println("Password:" + new_pass);
 
                 toMonitor.close();
                 out.close();

@@ -468,6 +468,10 @@ public class MessageParser {
     //Update Password
     //throws IOException
     public void UpdatePassword(String cmd, String newpassword) {
+        Execute(cmd);
+        //String msg = GetMonitorMessage();
+        //System.out.println(msg);
+        WritePersonalData(newpassword, COOKIE);
     }
 
     public void GetIdentification() {
