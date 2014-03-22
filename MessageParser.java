@@ -203,6 +203,14 @@ public class MessageParser {
                 sentmessage = karn.encrypt(sentmessage);
                 SendIt(sentmessage);
                 success = true;
+            } else if (sentmessage.trim().equals("CHANGE_PASSWORD")) {
+                sentmessage = sentmessage.concat(" ");
+                sentmessage = sentmessage.concat(PASSWORD);
+                sentmessage = sentmessage.concat(" ");
+                sentmessage = sentmessage.concat(arg);
+                sentmessage = karn.encrypt(sentmessage);
+                SendIt(sentmessage);
+                success = true;
             }
         } catch (IOException e) {
             System.out.println("IOError:\n\t"+e);
@@ -461,17 +469,12 @@ public class MessageParser {
 
     public void ChangePassword(String newpassword) {
         GetIdentification(); //Gives u the previous values of Cookie and Password
-        String quer = "CHANGE_PASSWORD "+PASSWORD+" "+newpassword;
-        UpdatePassword(quer, newpassword);
-    }
-
-    //Update Password
-    //throws IOException
-    public void UpdatePassword(String cmd, String newpassword) {
-        Execute(cmd);
-        //String msg = GetMonitorMessage();
-        //System.out.println(msg);
-        WritePersonalData(newpassword, COOKIE);
+        Execute("CHANGE_PASSWORD", newpassword);
+        String msg = GetMonitorMessage();
+        if (msg.startsWith("RESULT: CHANGE_PASSWORD")) {
+            COOKIE = msg.split(" ")[2].trim();
+            WritePersonalData(newpassword, COOKIE);
+        }
     }
 
     public void GetIdentification() {

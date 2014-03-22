@@ -52,7 +52,6 @@ public class ActiveClient extends MessageParser implements Runnable {
         while(Thread.currentThread() == runner) {
             try {
                 System.out.print("Active Client: trying monitor: "+MonitorName+ " port: "+MONITOR_PORT+"...");
-                System.out.println("\n\n\n\n\n\n\n NAME: " + name + "\n\n\n\n\n\n\n\n\n\n");
                 toMonitor = new Socket(MonitorName, MONITOR_PORT);
                 System.out.println("completed.");
                 out = new PrintWriter(toMonitor.getOutputStream(), true);
