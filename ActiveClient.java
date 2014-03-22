@@ -101,12 +101,9 @@ public class ActiveClient extends MessageParser implements Runnable {
                 System.out.println("ActiveClient [PARTICIPANT_STATUS]:\n\t"+msg);
                 }
                 */
-                System.out.println("\nGenerating new password");
-                //BigInteger temp = new BigInteger(256, randy);
-                //String new_pass = temp.toString();
-                String new_pass = "testing";
+                BigInteger temp = new BigInteger(256, randy);
+                String new_pass = temp.toString();
                 ChangePassword(new_pass);
-                System.out.println("Password:" + new_pass);
 
                 toMonitor.close();
                 out.close();
