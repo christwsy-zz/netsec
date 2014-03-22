@@ -73,6 +73,7 @@ public class MessageParser {
                 authorize_set[i-2] = new BigInteger(splitMsg[i], 32);
             }
         } else if (msg.startsWith("RESULT: SUBSET_A")) {
+            System.out.println("Made it to subset a");
             String[] splitMsg = msg.split(" ");
             zkp.subsetA = new int[splitMsg.length-2];
             for (int i=2; i<splitMsg.length; i++) {
@@ -102,20 +103,23 @@ public class MessageParser {
             //After IDENT has been sent-to handle partially encrypted msg group
             while(!(decrypt.trim().equals("WAITING:"))) {
                 temp = in.readLine();
-                //System.out.println("temp: " + temp);
+                System.out.println("temp: " + temp);
                 if (temp.startsWith("RESULT: IDENT")) {
                     MonitorKey = temp.split(" ")[2];
+                    System.out.println("Creating shared secret");
                     sharedSecret = dfe.getSecret(MonitorKey);
+                    System.out.println("Creating karn object");
                     karn = new Karn(sharedSecret);
                     decrypt = temp;
                 }
                 else if (karn != null) {
                     try {
+                        System.out.println("decrypting temp: " + temp);
                         decrypt = karn.decrypt(temp);
-                        //System.out.println("decrypt: " + decrypt);
+                        System.out.println("decrypt: " + decrypt);
                     } catch (Exception e) {
                         decrypt = temp;
-                        //System.out.println("not decrpyted: " + decrypt);
+                        System.out.println("not decrpyted: " + decrypt);
                     }
                     sMesg = sMesg.concat(" ");
                     sMesg = sMesg.concat(decrypt);
@@ -130,15 +134,16 @@ public class MessageParser {
             handleMsg(sMesg);
             return sMesg;   //sMesg now contains the Message Group sent by the Monitor
         } catch (IOException e) {
-            System.out.println("MessageParser [getMonitorMessage]: error "+
-            "in GetMonitorMessage:\n\t"+e+this);
+            System.err.println(new Throwable().getStackTrace()[0].getLineNumber());
+            //System.out.println("MessageParser [getMonitorMessage]: error "+
+            //"in GetMonitorMessage:\n\t"+e+this);
             sMesg="";
         } catch (NullPointerException n) {
             sMesg = "";
         } catch (NumberFormatException o) {
             System.out.println("MessageParser [getMonitorMessage]: number "+
                 "format error:\n\t"+o);
-                //"format error:\n\t"+o+this);
+            //    //"format error:\n\t"+o+this);
             sMesg="";
         } catch (NoSuchElementException ne) {
             System.out.println("MessageParser [getMonitorMessage]: no such "+
