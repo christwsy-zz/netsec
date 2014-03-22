@@ -77,19 +77,7 @@ public class MessageParser {
                 zkp.subsetA[i-2] = Integer.parseInt(splitMsg[i]);
             }
         } else if (msg.startsWith("RESULT: SUBSET_K")) {
-            System.out.println("Made it to subset k");
-            String[] splitMsg = msg.split(" ");
-            zkp.subsetK = new BigInteger[splitMsg.length-2];
-            for (int i=2; i<splitMsg.length; i++) {
-                zkp.subsetK[i-2] = new BigInteger(splitMsg[i], 32);
-            }
-        } else if (msg.startsWith("RESULT: SUBSET_J")) {
-            System.out.println("Made it to subset j");
-            String[] splitMsg = msg.split(" ");
-            zkp.subsetJ = new BigInteger[splitMsg.length-2];
-            for (int i=2; i<splitMsg.length; i++) {
-                zkp.subsetJ[i-2] = new BigInteger(splitMsg[i], 32);
-            }
+            zkp.saveSubsetKJ(msg);
         }
     }
 
@@ -342,8 +330,9 @@ public class MessageParser {
                 } else {
                     sentmessage = sentmessage.concat("DECLINE");
                 }
+                System.out.println("TRANSFER RESULT: " + sentmessage);
                 sentmessage = karn.encrypt(sentmessage);
-                SendIt (sentmessage);
+                //SendIt (sentmessage);
                 success = true;
             } else if (sentmessage.trim().equals("TRANSFER_REQUEST")) {
                 sentmessage = sentmessage.concat(" ");

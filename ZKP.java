@@ -69,10 +69,41 @@ class ZKP {
         }
     }
 
+    public void saveSubsetKJ(String msg) {
+
+        StringTokenizer st = new StringTokenizer(msg);
+        String token = "";
+        int read = 0;
+        int loc = 0;
+        subsetK = new BigInteger[subsetA.length];
+        subsetJ = new BigInteger[rounds.length - subsetA.length];
+        while (st.hasMoreTokens()) {
+            token = st.nextToken();
+            if (token.equals("SUBSET_K")) {
+                read = 1;
+                continue;
+            } else if (token.equals("SUBSET_J")) {
+                read = 2;
+                loc = 0;
+                continue;
+            } else if (token.equals("RESULT:")) {
+                continue;
+            } else if (token.equals("REQUIRE:")) {
+                return;
+            }
+
+            if (read == 1) {
+                subsetK[loc] = new BigInteger(token, 32);
+                loc++;
+            } else if (read == 2) {
+                subsetJ[loc] = new BigInteger(token, 32);
+                loc++;
+            }
+        }
+    }
+
     public boolean checkSubsetK() {
         System.out.println("starting subset k");
-        System.out.println(subsetK[0]);
-        System.out.println("done checking subset k");
         int k = 0;
         for (int i=0 ; i<rounds.length; i += 2) {
             BigInteger a1 = rounds[i].multiply(v).mod(n);
