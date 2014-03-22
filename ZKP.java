@@ -1,5 +1,6 @@
 import java.math.*;
 import java.security.*;
+import java.util.StringTokenizer;
 
 class ZKP {
     BigInteger s;
@@ -24,6 +25,27 @@ class ZKP {
     public void doRounds() {
         for (int i=0; i < rounds.length; i++) {
             rounds[i] = new BigInteger(size, sr).modPow(new BigInteger("2"), n);
+        }
+    }
+
+    public void saveAuthSet(String msg) {
+        StringTokenizer st = new StringTokenizer(msg);
+        String token = "";
+        boolean read = false;
+        int roundLoc = 0;
+        while (st.hasMoreTokens()) {
+            token = st.nextToken();
+            if (token.equals("AUTHORIZE_SET")) {
+                read = true;
+                continue;
+            } else if (token.equals("REQUIRE:")) {
+                return;
+            }
+
+            if (read) {
+                rounds[roundLoc] = new BigInteger(token, 32);
+                roundLoc++;
+            }
         }
     }
 
