@@ -103,7 +103,7 @@ public class ActiveClient extends MessageParser implements Runnable {
                 */
                 BigInteger temp = new BigInteger(256, randy);
                 String new_pass = temp.toString();
-                ChangePassword(new_pass);
+                //ChangePassword(new_pass);
 
                 toMonitor.close();
                 out.close();
