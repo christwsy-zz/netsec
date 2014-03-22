@@ -137,6 +137,7 @@ public class MessageParser {
                 "in GetMonitorMessage:\n\t"+e+this);
             sMesg="";
         } catch (NullPointerException n) {
+            System.out.println("NULL POINTER OH NOOOOOOOOOOOOOOO");
             sMesg = "";
         } catch (NumberFormatException o) {
             System.out.println("MessageParser [getMonitorMessage]: number "+
@@ -294,6 +295,7 @@ public class MessageParser {
                 sentmessage = sentmessage.concat(" ");
                 sentmessage = sentmessage.concat(Integer.toString(ROUNDS));
                 sentmessage = karn.encrypt(sentmessage);
+                zkp = new ZKP(ROUNDS);
                 SendIt (sentmessage);
                 success = true;
             } else if (sentmessage.trim().equals("AUTHORIZE_SET")) {
