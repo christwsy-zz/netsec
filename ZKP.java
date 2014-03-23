@@ -1,6 +1,6 @@
 import java.math.*;
 import java.security.*;
-import java.util.StringTokenizer;
+import java.util.*;
 
 class ZKP {
     BigInteger s;
@@ -62,6 +62,34 @@ class ZKP {
         }
     }
 
+    public void saveSubsetA(String msg) {
+        ArrayList<String> strings = new ArrayList<String>();
+        StringTokenizer st = new StringTokenizer(msg);
+        String token = "";
+        boolean read = false;
+        int loc = 0;
+        while (st.hasMoreTokens()) {
+            token = st.nextToken();
+            if (token.equals("SUBSET_A")) {
+                read = true;
+                continue;
+            } else if (token.equals("REQUIRE:")) {
+                break;
+            }
+
+            if (read) {
+                strings.add(token);
+            }
+        }
+
+        subsetA = new int[strings.size()];
+        loc = 0;
+        for (String idx: strings) {
+            subsetA[loc] = Integer.parseInt(idx);
+            loc++;
+        }
+    }
+
     public void calcSubsetK() {
         subsetK = new BigInteger[subsetA.length];
         for (int i=0; i<subsetA.length; i++) {
@@ -70,7 +98,6 @@ class ZKP {
     }
 
     public void saveSubsetKJ(String msg) {
-
         StringTokenizer st = new StringTokenizer(msg);
         String token = "";
         int read = 0;

@@ -71,11 +71,7 @@ public class MessageParser {
             zkp.saveAuthSet(msg);
         } else if (msg.startsWith("RESULT: SUBSET_A")) {
             System.out.println("Made it to subset a");
-            String[] splitMsg = msg.split(" ");
-            zkp.subsetA = new int[splitMsg.length-2];
-            for (int i=2; i<splitMsg.length; i++) {
-                zkp.subsetA[i-2] = Integer.parseInt(splitMsg[i]);
-            }
+            zkp.saveSubsetA(msg);
         } else if (msg.startsWith("RESULT: SUBSET_K")) {
             zkp.saveSubsetKJ(msg);
         }
