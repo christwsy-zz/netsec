@@ -13,13 +13,18 @@ class ZKP {
     BigInteger[] subsetK;
     BigInteger[] subsetJ;
 
-    public ZKP (int numRounds) {
+    //public ZKP (int numRounds) {
+    public ZKP () {
         size = 1024;
-        rounds = new BigInteger[numRounds];
+        //rounds = new BigInteger[numRounds];
         sr = new SecureRandom();
         s = new BigInteger(size, sr);
         n = new BigInteger(size, sr);
         v = s.modPow(new BigInteger("2"), n);
+    }
+
+    public void setRounds(int numRounds) {
+        rounds = new BigInteger[numRounds];
     }
 
     public void doRounds() {
@@ -173,6 +178,7 @@ class ZKP {
     }
 
     public static void main(String[] args) {
-        ZKP a =  new ZKP(8);
+        ZKP a =  new ZKP();
+        a.setRounds(8);
     }
 }
