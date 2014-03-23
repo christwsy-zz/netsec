@@ -58,7 +58,7 @@ public class MessageParser {
             System.out.println("Error making public key");
             System.out.println(e);
         }
-        //zkp = new ZKP(ROUNDS);
+        zkp = new ZKP();
     }
 
     // assign class variables from what is being
@@ -66,7 +66,7 @@ public class MessageParser {
     public void handleMsg(String msg) {
         if (msg.startsWith("RESULT: ROUNDS")) {
             ROUNDS = Integer.parseInt(msg.split(" ")[2]);
-            zkp = new ZKP(ROUNDS);
+            zkp.setRounds(ROUNDS);
         } else if (msg.startsWith("RESULT: AUTHORIZE_SET")) {
             zkp.saveAuthSet(msg);
         } else if (msg.startsWith("RESULT: SUBSET_A")) {
@@ -279,7 +279,7 @@ public class MessageParser {
                 sentmessage = sentmessage.concat(" ");
                 sentmessage = sentmessage.concat(Integer.toString(ROUNDS));
                 sentmessage = karn.encrypt(sentmessage);
-                zkp = new ZKP(ROUNDS);
+                zkp.setRounds(ROUNDS);
                 SendIt (sentmessage);
                 success = true;
             } else if (sentmessage.trim().equals("AUTHORIZE_SET")) {
@@ -332,7 +332,7 @@ public class MessageParser {
                 success = true;
             } else if (sentmessage.trim().equals("TRANSFER_REQUEST")) {
                 sentmessage = sentmessage.concat(" ");
-                sentmessage = sentmessage.concat("JOHNE");
+                sentmessage = sentmessage.concat("DIRKY123");
                 sentmessage = sentmessage.concat(" ");
                 sentmessage = sentmessage.concat("10");
                 sentmessage = sentmessage.concat(" ");
